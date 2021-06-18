@@ -1,0 +1,19 @@
+<h1>Memory Game</h1>
+
+<button (click)="newGame()">New Game</button>
+
+<div class="tabla" *ngFor="let fila of tablero2">
+  <div
+    class="celdasStyle"
+    *ngFor="let celda of fila"
+    (click)="mostarCelda(celda)"
+  >
+    <span *ngIf="celda.estado">
+      {{ celda.name }}
+    </span>
+  </div>
+</div>
+
+<h2>Repeticiones:</h2>
+<br />
+<pre>seleccionada: {{ celdaSeleccionada | json }}</pre>

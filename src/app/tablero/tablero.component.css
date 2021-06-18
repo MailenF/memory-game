@@ -1,0 +1,12 @@
+.tabla {
+  display: table;
+  border: 1px solid black;
+}
+.celdasStyle {
+  display: table-cell;
+  border: 1px solid black;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  font-size: 2rem;
+}
