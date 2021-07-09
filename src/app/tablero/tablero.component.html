@@ -1,19 +1,25 @@
-<h1>Memory Game</h1>
+<br />
+<h1 class="letraTituloJuego">Memory Game</h1>
 
-<button (click)="newGame()">New Game</button>
+<button class="letraBoton" mat-raised-button color="accent" (click)="newGame()">
+  New Game
+</button>
+<button
+  class="letraBoton"
+  mat-raised-button
+  color="accent"
+  (click)="tablero6x4()"
+>
+  Tablero 6x4
+</button>
 
-<div class="tabla" *ngFor="let fila of tablero2">
+<div class="tabla" *ngFor="let fila of tablero">
   <div
     class="celdasStyle"
     *ngFor="let celda of fila"
-    (click)="mostarCelda(celda)"
-  >
-    <span *ngIf="celda.estado">
-      {{ celda.name }}
-    </span>
-  </div>
+    [ngClass]="[celda.estado ? colores.get(celda.name) : '']"
+    (click)="clickEnCelda(celda)"
+  ></div>
 </div>
-
-<h2>Repeticiones:</h2>
+<h2 class="letraIntentos">Intentos:{{ numeroIntentos }}</h2>
 <br />
-<pre>seleccionada: {{ celdaSeleccionada | json }}</pre>

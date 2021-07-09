@@ -1,0 +1,25 @@
+.tabla {
+  display: table-cell;
+}
+.celdasStyle {
+  display: table;
+  border: 1px solid grey;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+}
+.alineacion {
+  text-align: center;
+}
+.letraTituloJuego {
+  color: black;
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 50px;
+}
+
+.celdasNoVisibles {
+  background-color: #2a2a2a;
+}
+.celdasVisibles {
+  background-color: #cccccc;
+}

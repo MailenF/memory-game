@@ -1,0 +1,39 @@
+<div class="alineacion">
+  <br />
+  <h1 class="letraTituloJuego">Buscaminas</h1>
+  <br />
+  <div class="tabla" *ngFor="let fila of tableroDisenio">
+    <ng-container *ngFor="let celda of fila">
+      <!--      completar acá la lógica-->
+      <ng-container *ngIf="!celda.visible">
+        <div class="celdasStyle celdasNoVisibles">
+          <ng-container *ngIf="celda.escudo === 'bandera'">
+            <img src="assets/banderin.jpg" height="100px" width="100px"
+          /></ng-container>
+          <ng-container *ngIf="celda.escudo === 'pregunta'">
+            <img src="assets/pregunta.jpg" height="100px" width="100px"
+          /></ng-container>
+          <ng-container *ngIf="celda.escudo === null"> </ng-container>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="celda.visible">
+        <div class="celdasStyle celdasVisibles">
+          <ng-container *ngIf="celda.esBomba">
+            <img src="assets/bomba.png" height="100px" width="100px"
+          /></ng-container>
+          <ng-container *ngIf="celda.bombasCercanas">
+            {{ celda.bombasCercanas }}
+          </ng-container>
+          <ng-container *ngIf="!celda.esBomba"> </ng-container>
+        </div>
+      </ng-container>
+
+      <!--      completar acá la lógica-->
+    </ng-container>
+  </div>
+  <br />
+  <div class="tabla" *ngFor="let fila of tablero">
+    <div class="celdasStyle" *ngFor="let celda of fila"></div>
+  </div>
+</div>

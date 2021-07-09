@@ -1,0 +1,19 @@
+.padre {
+  background: #b1b2ff;
+}
+
+.centrarH1 {
+  text-align: center;
+  color: black;
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 50px;
+}
+
+.centrarCard {
+  background-color: #fafafa;
+  margin: 1rem;
+  padding: 1rem;
+  border: 2px solid #ccc;
+  /* IMPORTANTE */
+  text-align: center;
+}

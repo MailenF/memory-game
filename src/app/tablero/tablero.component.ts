@@ -1,11 +1,57 @@
 // @ts-ignore
 
 import { Component, OnInit } from '@angular/core';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+
+import Swal from 'sweetalert2';
+
+function chunk<T>(arr: T[], size: number): T[][] {
+  const resultado: T[][] = [];
+
+  let chunkArr = [];
+  for (const item of arr) {
+    if (chunkArr.length === size) {
+      resultado.push(chunkArr);
+      chunkArr = [];
+    }
+    chunkArr.push(item);
+  }
+  if (chunkArr.length) {
+    resultado.push(chunkArr);
+  }
+  return resultado;
+}
+
+function repeat<T>(value: T, size: number): T[] {
+  const resultado: T[] = [];
+  while (size--) {
+    resultado.push(value);
+  }
+  return resultado;
+}
+
+type TipoCelda = 'A' | 'B' | 'C' | 'D';
 
 interface Celda {
-  name: string;
+  name: TipoCelda;
   estado: boolean;
+  finalizada: boolean;
+}
+
+function toCelda(valor: TipoCelda): Celda {
+  return {
+    name: valor,
+    estado: false,
+    finalizada: false,
+  };
+}
+
+function crearTablero(valores: TipoCelda[], sizeFila = 4): Celda[][] {
+  valores.sort(() => Math.random() - Math.random());
+  return chunk(valores, sizeFila).map((fila) => {
+    return fila.map((value) => {
+      return toCelda(value);
+    });
+  });
 }
 
 @Component({
@@ -14,90 +60,133 @@ interface Celda {
   styleUrls: ['./tablero.component.css'],
 })
 export class TableroComponent implements OnInit {
-  tablero2: Celda[][] = [
-    [
-      { name: 'A', estado: false },
-      { name: 'C', estado: false },
-      { name: 'D', estado: false },
-      { name: 'B', estado: false },
-    ],
-    [
-      { name: 'D', estado: false },
-      { name: 'A', estado: false },
-      { name: 'B', estado: false },
-      { name: 'C', estado: false },
-    ],
-    [
-      { name: 'B', estado: false },
-      { name: 'D', estado: false },
-      { name: 'A', estado: false },
-      { name: 'C', estado: false },
-    ],
-    [
-      { name: 'C', estado: false },
-      { name: 'D', estado: false },
-      { name: 'B', estado: false },
-      { name: 'A', estado: false },
-    ],
-  ];
+  tablero: Celda[][] = crearTablero([
+    ...repeat<TipoCelda>('A', 4),
+    ...repeat<TipoCelda>('B', 4),
+    ...repeat<TipoCelda>('C', 4),
+    ...repeat<TipoCelda>('D', 4),
+  ]);
 
-  celdaSeleccionada: Celda;
-  suma: number;
+  colores = new Map<TipoCelda, string>([
+    ['A', 'colorA'],
+    ['B', 'colorB'],
+    ['C', 'colorC'],
+    ['D', 'colorD'],
+  ]);
+
+  celdaSelecciona: Celda | null | undefined;
+  numeroIntentos = 0;
+  onDelay = false;
+  winner = false;
+  cartelWinner: any;
 
   constructor() {}
 
   ngOnInit(): void {}
 
-  newGame(): void {
-    this.tablero2 = [
-      [
-        { name: 'A', estado: false },
-        { name: 'C', estado: false },
-        { name: 'D', estado: false },
-        { name: 'B', estado: false },
-      ],
-      [
-        { name: 'D', estado: false },
-        { name: 'A', estado: false },
-        { name: 'B', estado: false },
-        { name: 'C', estado: false },
-      ],
-      [
-        { name: 'B', estado: false },
-        { name: 'D', estado: false },
-        { name: 'A', estado: false },
-        { name: 'C', estado: false },
-      ],
-      [
-        { name: 'C', estado: false },
-        { name: 'D', estado: false },
-        { name: 'B', estado: false },
-        { name: 'A', estado: false },
-      ],
-    ];
+  async startDelay(): Promise<void> {
+    if (!this.onDelay) {
+      this.onDelay = true;
+      await new Promise<void>((resolve, reject) => {
+        setTimeout(() => {
+          resolve();
+        }, 500);
+      });
+      this.onDelay = false;
+    }
   }
 
-  mostarCelda(celda: Celda): void {
+  newGame(): void {
+    this.intentosWinner();
+    this.tablero = crearTablero([
+      ...repeat<TipoCelda>('A', 4),
+      ...repeat<TipoCelda>('B', 4),
+      ...repeat<TipoCelda>('C', 4),
+      ...repeat<TipoCelda>('D', 4),
+    ]);
+  }
+
+  tablero6x4(): void {
+    this.intentosWinner();
+    this.tablero = crearTablero(
+      [
+        ...repeat<TipoCelda>('A', 6),
+        ...repeat<TipoCelda>('B', 6),
+        ...repeat<TipoCelda>('C', 6),
+        ...repeat<TipoCelda>('D', 6),
+      ],
+      6
+    );
+  }
+
+  async clickEnCelda(celda: Celda): Promise<void> {
+    if (this.onDelay) {
+      return;
+    }
+
+    if (celda.finalizada) {
+      return;
+    }
+
     celda.estado = true;
+
     // Pregunto si es el primer click
-    if (!this.celdaSeleccionada) {
-      console.log('1', !this.celdaSeleccionada);
-      this.celdaSeleccionada = celda;
-      console.log('2', this.celdaSeleccionada);
+    if (!this.celdaSelecciona) {
+      this.primerClick(celda);
     } else {
+      await this.segundoClick(celda);
+    }
+    this.calcularGanador();
+    this.opensweetalert();
+  }
+
+  primerClick(celda: Celda): void {
+    this.celdaSelecciona = celda;
+  }
+
+  // @ts-ignore
+  async segundoClick(celda: Celda): Promise<boolean> {
+    if (this.celdaSelecciona) {
       // En el segundo click, comparo esta celda con la anterior
-      if (this.celdaSeleccionada.name !== celda.name) {
-        this.celdaSeleccionada.estado = false;
-        console.log('3', this.celdaSeleccionada.name);
+      this.numeroIntentos += 1;
+      if (this.celdaSelecciona.name !== celda.name) {
+        await this.startDelay();
+        this.celdaSelecciona.estado = false;
         celda.estado = false;
-        console.log('4', celda.name);
+      } else {
+        this.celdaSelecciona.finalizada = true;
+        celda.finalizada = true;
       }
-      this.celdaSeleccionada = null;
+      this.celdaSelecciona = null;
+    }
+  }
+
+  calcularGanador(): void {
+    this.winner = this.tablero.every((fila) => {
+      return fila.every((celda) => celda.finalizada);
+    });
+  }
+
+  intentosWinner(): void {
+    this.winner = false;
+    this.numeroIntentos = 0;
+  }
+
+  // @ts-ignore
+  opensweetalert(): void {
+    if (this.winner) {
+      this.cartelWinner = Swal.fire({
+        title: 'GANASTE',
+        width: 500,
+        padding: '3em',
+        background: '#fff url("assets/fondo.jpg")',
+        backdrop: `
+    rgba(0,0,123,0.4)
+    url("assets/cat.gif")
+    left top
+    no-repeat
+  `,
+      });
     }
   }
 }
-// setTimeout(function(): void {
-// this.celdaSeleccionada.estado = false;
-// celda.estado = false;
-// }, 3000);
-

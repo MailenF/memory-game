@@ -1,12 +1,57 @@
 .tabla {
   display: table;
-  border: 1px solid black;
+  border: 1px solid grey;
 }
+
 .celdasStyle {
   display: table-cell;
-  border: 1px solid black;
+  border: 1px solid grey;
   width: 100px;
   height: 100px;
-  text-align: center;
-  font-size: 2rem;
+  cursor: pointer;
+}
+
+.letraTituloJuego {
+  color: black;
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 50px;
+}
+
+.letraWinner {
+  color: black;
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 80px;
+}
+
+.letraIntentos {
+  color: black;
+  font-family: "Lucida Console", Monaco, monospace;
+}
+
+.letraBoton {
+  color: white;
+  font-family: "Lucida Console", Monaco, monospace;
+}
+
+.colorA {
+  background-color: aquamarine;
+}
+.colorB {
+  background-color: dimgray;
+}
+.colorC {
+  background-color: cornflowerblue;
+}
+.colorD {
+  background-color: pink;
+}
+.colorE {
+  background-color: black;
+}
+.colorF {
+  background-color: khaki;
+}
+
+.mat-button-base {
+  margin: 8px 8px 8px 0;
 }

@@ -1,0 +1,34 @@
+.tablero {
+  display: grid;
+  grid-template-rows: 100px 100px 100px;
+  grid-template-columns: 100px 100px 100px;
+  grid-gap: 5px;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-square {
+  border: 1px gray solid;
+  height: 200px;
+}
+
+.alineacion {
+  text-align: center;
+}
+
+.letraTituloJuego {
+  color: black;
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 50px;
+}
+
+.letraBoton {
+  color: white;
+  font-family: "Lucida Console", Monaco, monospace;
+}
+
+.letraPlayer {
+  color: black;
+  font-family: "Lucida Console", Monaco, monospace;
+  font-size: 30px;
+}

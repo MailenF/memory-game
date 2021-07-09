@@ -1,0 +1,25 @@
+<br />
+<div class="alineacion">
+  <h1 class="letraTituloJuego">TaTeTi</h1>
+  <h2 class="letraPlayer">Current Player {{ player }}</h2>
+
+  <button
+    class="letraBoton"
+    mat-raised-button
+    color="accent"
+    (click)="newGame()"
+  >
+    Start new Game
+  </button>
+  <br />
+  <br />
+  <div class="tablero">
+    <app-tateti-square
+      *ngFor="let val of squares; let i = index"
+      [value]="val"
+      (click)="makeMove(i)"
+    ></app-tateti-square>
+  </div>
+
+  <app-tateti-square></app-tateti-square>
+</div>
